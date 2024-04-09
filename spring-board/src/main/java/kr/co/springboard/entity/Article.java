@@ -44,6 +44,4 @@ public class Article {
     @CreationTimestamp
     private LocalDateTime rdate;
 
-    private String nick;
-
 }

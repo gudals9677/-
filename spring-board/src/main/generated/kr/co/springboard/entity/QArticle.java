@@ -29,8 +29,6 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
 
-    public final StringPath nick = createString("nick");
-
     public final NumberPath<Integer> no = createNumber("no", Integer.class);
 
     public final NumberPath<Integer> parent = createNumber("parent", Integer.class);

@@ -1,34 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>글수정</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-<body>
-    <div id="container">
-        <header>
-            <h3>Board System v1.0</h3>
-            <p>
-                <span>[[${#authentication.principal.user.nick}]]님 반갑습니다.</span>
-                <a th:href="@{/user/logout}" class="logout">[로그아웃]</a>
-            </p>
-        </header>
-        <main>
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="/layout/defaultLayout.html">
+
+<main layout:fragment="content">
             <section class="modify">
                 <h3>글수정</h3>
                 <article>
-                    <form action="#">
+                    <form th:action="@{/modify/{no}(no=${article.no})}" method="post" enctype="multipart/form-data">
                         <table>
                             <tr>
                                 <td>제목</td>
-                                <td><input type="text" name="title" placeholder="제목을 입력하세요."/></td>
+                                <td><input type="text" name="title" th:value="${article.title}" placeholder="제목을 입력하세요."/></td>
                             </tr>
                             <tr>
                                 <td>내용</td>
                                 <td>
-                                    <textarea name="content"></textarea>                                
+                                    <textarea name="content" th:text="${article.content}"></textarea>
                                 </td>
                             </tr>
                             <tr>
@@ -37,16 +23,11 @@
                             </tr>
                         </table>
                         <div>
-                            <a href="#" class="btnCancel">취소</a>
+                            <a th:href="@{/view(no=${article.no})}" class="btnCancel">취소</a>
                             <input type="submit"  class="btnWrite" value="수정완료">
                         </div>
                     </form>
                 </article>
             </section>
         </main>
-        <footer>
-            <p>ⓒcopyright 김철학.com</p>
-        </footer>
-    </div>
-</body>
 </html>

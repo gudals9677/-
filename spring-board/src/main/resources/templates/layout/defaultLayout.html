@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div id="container">
+        <header>
+            <h3>Board System v1.0</h3>
+            <p>
+<!--/*                <span>[[${#authentication.principal.user.nick}]]님 반갑습니다.</span> */-->
+                <a th:href="@{/user/logout}" class="logout">[로그아웃]</a>
+            </p>
+        </header>
+
+
+        <main layout:fragment="content"></main>
+
+
+        <footer>
+            <p>ⓒcopyright 김철학.com</p>
+        </footer>
+    </div>
+</body>
+</html>
