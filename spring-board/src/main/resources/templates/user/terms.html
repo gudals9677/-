@@ -7,7 +7,7 @@
                         <td>
                             <textarea readonly>[[${termResult.terms}]]</textarea>
                             <p>
-                                <label><input type="checkbox" name="chk1"/>동의합니다.</label>
+                                <label><input type="checkbox" name="agree1"/>동의합니다.</label>
                             </p>
                         </td>
                     </tr>
@@ -18,7 +18,7 @@
                         <td>
                             <textarea readonly>[[${termResult.privacy}]]</textarea>
                             <p>
-                                <label><input type="checkbox" name="chk2"/>동의합니다.</label>
+                                <label><input type="checkbox" name="agree2"/>동의합니다.</label>
                             </p>
                         </td>
                     </tr>
@@ -29,7 +29,7 @@
                         <td>
                             <textarea readonly>[[${termResult.sms}]]</textarea>
                             <p>
-                                <label><input type="checkbox" name="chk3"/>동의합니다.</label>
+                                <label><input type="checkbox" name="agree3"/>동의합니다.</label>
                             </p>
                         </td>
                     </tr>
@@ -41,3 +41,25 @@
             </section>
         </main>
 <th:block th:include="~{/user/_footer.html}"/>
+
+<script>
+
+    window.onload = function (){
+
+        const agree1 = document.getElementsByName('agree1')[0];
+        const agree2 = document.getElementsByName('agree2')[0];
+        const agree3 = document.getElementsByName('agree3')[0];
+        const btnNext = document.getElementsByClassName('btnNext')[0];
+
+        btnNext.onclick = () => {
+
+            if(agree1.checked && agree2.checked){
+                return true;
+            }else{
+                // 필수 동의 알림
+                alert('이용약관과 개인정보 취급방침에 동의해야 합니다.');
+                return false;
+            }
+        }
+    }
+</script>

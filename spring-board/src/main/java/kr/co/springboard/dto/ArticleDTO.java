@@ -20,13 +20,14 @@ public class ArticleDTO {
     private String cate;
     private String title;
     private String content;
-    private int file;
+    private Integer file;
     private int hit;
     private String writer;
     private String regip;
     private LocalDateTime rdate;
 
     private List<MultipartFile> files;
+    private List<FileDTO> fileList;
 
     private UserDTO user;
 

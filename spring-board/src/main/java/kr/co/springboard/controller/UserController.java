@@ -30,8 +30,6 @@ public class UserController {
         return "/user/login";
     }
 
-
-
     @GetMapping("/user/terms")
     public String terms(Model model){
 

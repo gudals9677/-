@@ -12,7 +12,7 @@
                     <tr>
                         <td>첨부파일</td>
                         <td th:if="${view.file > 0}">
-                            <a href="#">2020년 상반기 매출자료.xls</a>
+                            <a href="#" th:each="file : ${view.fileList}" th:text="${file.oName}"></a>
                         </td>
                     </tr>
                     <tr>
@@ -33,10 +33,10 @@
                     <h3>댓글목록</h3>
                     <article class="comment">
                         <span>
-                            <span>길동이</span>
-                            <span>20-05-13</span>
+                            <span th:text="${view.writer}">길동이</span>
+                            <span th:text="${#temporals.format(view.rdate, 'yyyy-MM-dd')}">20-05-13</span>
                         </span>
-                        <textarea name="comment" readonly>댓글 샘플입니다.</textarea>
+                        <textarea name="comment" readonly th:text="${view.comment}">댓글 샘플입니다.</textarea>
                         <div>
                             <a href="#">삭제</a>
                             <a href="#">수정</a>

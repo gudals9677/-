@@ -17,10 +17,6 @@
                                     <textarea name="content" th:text="${article.content}"></textarea>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>첨부</td>
-                                <td><input type="file" name="file"/></td>
-                            </tr>
                         </table>
                         <div>
                             <a th:href="@{/view(no=${article.no})}" class="btnCancel">취소</a>

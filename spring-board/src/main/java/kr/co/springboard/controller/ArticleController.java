@@ -2,8 +2,10 @@ package kr.co.springboard.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.springboard.dto.ArticleDTO;
+import kr.co.springboard.dto.FileDTO;
 import kr.co.springboard.entity.Article;
 import kr.co.springboard.service.ArticleService;
+import kr.co.springboard.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -23,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final FileService fileService;
 
     // 게시글 출력
     /*@GetMapping("/list")
@@ -98,16 +106,17 @@ public class ArticleController {
     }
 
     @PostMapping("/modify/{no}")
-    public String modify(@PathVariable("no") int no, Article article){
+    public String modify(@PathVariable("no") int no, ArticleDTO articleDTO){
 
-        //기존 글
-        Article articleTemp = articleService.articleView(no);
-        // 수정 글
-        articleTemp.setTitle(article.getTitle());
-        articleTemp.setContent(article.getContent());
-        articleTemp.setFile(article.getFile());
+        // 기존 글 조회
+       ArticleDTO articleViewDTO = articleService.articleView(no);
 
-        articleService.updateArticle(articleTemp);
+        // 수정된 내용 설정
+        articleViewDTO.setTitle(articleDTO.getTitle());
+        articleViewDTO.setContent(articleDTO.getContent());
+
+        // 수정된 글 업데이트
+        articleService.updateArticle(articleViewDTO);
 
         return "redirect:/list";
     }

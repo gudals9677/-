@@ -1,8 +1,10 @@
 package kr.co.springboard.service;
-import java.io.File;
 import kr.co.springboard.dto.ArticleDTO;
+import kr.co.springboard.dto.FileDTO;
 import kr.co.springboard.entity.Article;
+import kr.co.springboard.entity.File;
 import kr.co.springboard.repository.ArticleRepository;
+import kr.co.springboard.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -21,22 +24,48 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final ModelMapper modelMapper;
+    private final FileService fileService;
+    private final FileRepository fileRepository;
 
     // 게시글 작성
     public void insertArticle(ArticleDTO articleDTO){
+
+        // 파일 첨부
+        List<FileDTO> files = fileService.fileUpload(articleDTO);
+
+        // 파일 첨부 갯수 초기화
+        articleDTO.setFile(files.size());
 
         Article article = modelMapper.map(articleDTO, Article.class);
         log.info("article = {}", article.toString());
 
         Article savedArticle = articleRepository.save(article);
         log.info("insertArticle ={}", savedArticle.toString());
+
+        // 파일 insert
+        for (FileDTO fileDTO : files){
+
+            fileDTO.setAno(savedArticle.getNo());
+
+            // 여기서 에러나는데 RootConfig 파일에 ModelMapper 설정에 이거 추가 -> .setMatchingStrategy(MatchingStrategies.STRICT)
+            File file = modelMapper.map(fileDTO, File.class);
+
+            fileRepository.save(file);
+        }
     }
 
     // 게시글 수정
-    public void updateArticle(Article article){
+    public void updateArticle(ArticleDTO articleDTO){
 
-        articleRepository.save(article);
+            //게시글 번호
+            int articleNo = articleDTO.getNo();
 
+            Article article = modelMapper.map(articleDTO, Article.class);
+            Article savedArticles = articleRepository.save(article);
+    }
+
+    private String getFileExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf("."));
     }
     /*
     // 게시글 리스트
@@ -59,13 +88,25 @@ public class ArticleService {
 
 
     // 특정 게시글 불러오기
-    public Article articleView(int no){
+    public ArticleDTO articleView(int no){
 
-        return articleRepository.findById(no).get();
+        Article article = articleRepository.findById(no).orElse(null);
+        if (article != null) {
+            return modelMapper.map(article, ArticleDTO.class);
+        }
+        return null; // 해당 번호에 해당하는 게시글이 없는 경우
     }
+
 
     //특정 게시글 삭제
     public void articleDelete(int no){
+
+        // 게시글에 첨부된 파일들을 먼저 삭제
+        List<File> files = fileRepository.findByAno(no);
+        for (File file : files) {
+            fileRepository.delete(file);
+        }
+
         articleRepository.deleteById(no);
     }
 

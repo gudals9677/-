@@ -7,7 +7,6 @@
                 <article>
                     <form th:action="@{/write}" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="writer" th:value="${#authentication.principal.user.uid}"/>
-                        <input type="text" name="nick" th:text="${nick}"/>
                         <table>
                             <tr>
                                 <td>제목</td>
