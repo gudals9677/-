@@ -1,6 +1,9 @@
 package kr.co.springboard.service;
+import com.querydsl.core.Tuple;
 import kr.co.springboard.dto.ArticleDTO;
 import kr.co.springboard.dto.FileDTO;
+import kr.co.springboard.dto.PageRequestDTO;
+import kr.co.springboard.dto.PageResponseDTO;
 import kr.co.springboard.entity.Article;
 import kr.co.springboard.entity.File;
 import kr.co.springboard.repository.ArticleRepository;
@@ -52,6 +55,31 @@ public class ArticleService {
 
             fileRepository.save(file);
         }
+    }
+
+    public PageResponseDTO selectArticles(PageRequestDTO pageRequestDTO){
+
+        log.info("selectArticles...1");
+        Pageable pageable = pageRequestDTO.getPageable("no");
+
+        log.info("selectArticles...2");
+        Page<Article> pageArticle = articleRepository.findByParent(0, pageable);
+        //Page<Article> pageArticle = articleRepository.findByParentWithNick(0, pageable);
+
+        log.info("selectArticles...3 : " + pageArticle);
+        List<ArticleDTO> dtoList = pageArticle.getContent().stream()
+                .map(article -> modelMapper.map(article, ArticleDTO.class))
+                .toList();
+
+        log.info("selectArticles...4 : " + dtoList);
+
+        int total = (int) pageArticle.getTotalElements();
+
+        return PageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
     }
 
     // 게시글 수정

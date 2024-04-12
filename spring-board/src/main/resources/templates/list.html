@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="/layout/defaultLayout.html">
+      layout:decorate="~{/layout/defaultLayout}">
 
 <main layout:fragment="content">
     <section class="list">
@@ -13,8 +13,8 @@
                     <th>날짜</th>
                     <th>조회</th>
                 </tr>
-                <tr th:each="article : ${list}">
-                    <td th:text="${article.no}">1</td>
+                <tr th:each="article, index:${pageResponseDTO.dtoList}">
+                    <td th:text="${pageResponseDTO.startNo - index.index}"></td>
                     <td>
                         <a th:text="${article.title}" th:href="@{/view(no=${article.no})}"></a>
                     </td>
@@ -29,14 +29,13 @@
 
         <div class="paging">
             <!-- 이전 버튼 -->
-            <a th:href="@{/list(page=${startPage -1})}">이전</a>
+            <a th:if="${pageResponseDTO.prev}" th:href="@{/list(pg=${pageResponseDTO.start-1})}">이전</a>
             <!-- 페이지 링크 -->
-            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-                <a th:href="@{/list(page=${page -1}, searchKeyword = ${param.searchKeyword})}" th:class="${page == nowPage} ? 'current' : 'off'" th:text="${page}"></a>
-
+            <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                <a th:href="@{/list(pg=${num})}" th:class="${pageResponseDTO.pg == num} ? 'current' : 'off'" th:text="${num}"></a>
             </th:block>
             <!-- 다음 버튼 -->
-            <a th:href="@{/list(page=${endPage + 1})}">다음</a>
+            <a th:if="${pageResponseDTO.next}" th:href="@{/list(pg=${pageResponseDTO.end+1})}">다음</a>
         </div>
         <form th:action="@{/list}" class="search-form" style="text-align: center; margin-bottom: 10px;">
             <input type="text" name="searchKeyword" class="search-input" style="margin-right: 5px;">

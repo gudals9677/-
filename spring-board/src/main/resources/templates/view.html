@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="/layout/defaultLayout.html">
+      layout:decorate="~{/layout/defaultLayout}">
 
 <main layout:fragment="content">
             <section class="view">
@@ -31,35 +31,96 @@
                 <!-- 댓글리스트 -->
                 <section class="commentList">
                     <h3>댓글목록</h3>
-                    <article class="comment">
-                        <span>
-                            <span th:text="${view.writer}">길동이</span>
-                            <span th:text="${#temporals.format(view.rdate, 'yyyy-MM-dd')}">20-05-13</span>
-                        </span>
-                        <textarea name="comment" readonly th:text="${view.comment}">댓글 샘플입니다.</textarea>
-                        <div>
-                            <a href="#">삭제</a>
-                            <a href="#">수정</a>
-                        </div>
-                    </article>
-                    <p class="empty">
-                        등록된 댓글이 없습니다.
-                    </p>
+
                 </section>
-    
-                <!-- 댓글입력폼 -->
+
                 <section class="commentForm">
                     <h3>댓글쓰기</h3>
-                    <form action="#">
-                        <textarea name="comment"></textarea>
+                    <form>
+                        <input type="hidden" name="parent" th:value="${view.no}">
+                        <div th:if="${#authorization.expression('isAuthenticated()')}">
+                            <input type="hidden" name="writer" th:value="${#authentication.principal.user.uid}">
+                        </div>
+                        <textarea name="content"></textarea>
                         <div>
-                            <a href="#" class="btnCancel">취소</a>
+                            <a th:href="@{/view(no=${view.no})}" class="btnCancel">취소</a>
                             <input type="submit" class="btnWrite" value="작성완료"/>
                         </div>
                     </form>
                 </section>
-    
             </section>
         </main>
-
 </html>
+<script th:inline="javascript">
+    window.onload = function (){
+
+        //////////////////////////////////////////////////////////////////////////
+        // 댓글 등록
+        //////////////////////////////////////////////////////////////////////////
+        const commentForms = document.querySelectorAll('.commentForm');
+
+        commentForms.forEach(commentForm => {
+            commentForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const parentInput = commentForm.querySelector('input[name="parent"]');
+                const writerInput = commentForm.querySelector('input[name="writer"]');
+                const contentTextarea = commentForm.querySelector('textarea[name="content"]');
+
+                console.log(parentInput);
+                console.log(writerInput);
+                console.log(contentTextarea);
+                const jsonData = {
+                    "parent": parentInput.value,
+                    "writer": writerInput.value,
+                    "content": contentTextarea.value
+                };
+
+                console.log(jsonData);
+
+                // POST용 fetchData 호출(util.js 확인, 기존 fetchData 이름을 fetchGet으로 변경)
+                const data = await fetchPost('/comment', jsonData);
+
+                console.log(data);
+            });
+        });
+        //////////////////////////////////////////////////////////////////////////
+        // 댓글 불러오기
+        //////////////////////////////////////////////////////////////////////////
+        const commentList = document.querySelector('.commentList');
+
+        // 상단 <script> 선언 태그에 th:inline="javascript" 속성 추가
+        const no = [[${view.no}]];
+
+        // fetchGet 함수는 await 비동기 실행되기 때문에 이벤트 핸들러 function 앞에 async 추가(문법적인 사항)
+        // 페이지 로드 후 바로 댓글목록 데이터를 요청하기 보다는 약간 2초정도 시간 뒤에 요청을 하면 좀더 안정적
+        setTimeout(async function(){
+
+            const comments = await fetchGet(`/comment/${no}`);
+            console.log('comments ' + comments);
+
+            if(comments.length === 0){
+                // 댓글이 없는 경우
+                commentList.innerHTML = `<p class="empty">등록된 댓글이 없습니다.</p>`;
+            }
+            for(const comment of comments) {
+
+                const commentArticle = `<article className="comment">
+                                            <span>
+                                                 <span>${comment.writer}</span>
+                                                <span>${comment.rdate.substring(0, 10)}</span>
+                                            </span>
+                                        <textarea name="comment">${comment.content}</textarea>
+                                        <div>
+                                            <a href="#">삭제</a>
+                                            <a href="#">수정</a>
+                                        </div>
+                                    </article>`;
+
+                //태그 문자열 삽입
+                commentList.insertAdjacentHTML('beforeend', commentArticle);
+            }
+        });
+
+    }
+</script>

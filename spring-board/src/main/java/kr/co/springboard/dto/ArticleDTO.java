@@ -14,14 +14,14 @@ import java.util.List;
 @Builder
 public class ArticleDTO {
 
-    private int no;
-    private int parent;
-    private int comment;
+    private Integer no;
+    private Integer parent;
+    private Integer comment;
     private String cate;
     private String title;
     private String content;
     private Integer file;
-    private int hit;
+    private Integer hit;
     private String writer;
     private String regip;
     private LocalDateTime rdate;

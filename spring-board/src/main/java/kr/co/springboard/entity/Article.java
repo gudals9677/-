@@ -19,13 +19,13 @@ public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int no;
+    private Integer no;
 
     @Builder.Default
-    private int parent = 0;
+    private Integer parent = 0;
 
     @Builder.Default
-    private int comment = 0;
+    private Integer comment = 0;
 
     private String cate;
 
@@ -34,10 +34,10 @@ public class Article {
     private String writer;
 
     @Builder.Default
-    private int file = 0;
+    private Integer file = 0;
 
     @Builder.Default
-    private int hit = 0;
+    private Integer hit = 0;
 
     private String regip;
 

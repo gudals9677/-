@@ -3,6 +3,8 @@ package kr.co.springboard.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.springboard.dto.ArticleDTO;
 import kr.co.springboard.dto.FileDTO;
+import kr.co.springboard.dto.PageRequestDTO;
+import kr.co.springboard.dto.PageResponseDTO;
 import kr.co.springboard.entity.Article;
 import kr.co.springboard.service.ArticleService;
 import kr.co.springboard.service.FileService;
@@ -71,6 +73,7 @@ public class ArticleController {
     }*/
 
     // 검색기능 추가
+    /*
     @GetMapping("/list")
     public String list(Model model, @PageableDefault(page = 0, size= 10, sort = "no",
             direction = Sort.Direction.DESC)Pageable pageable,String searchKeyword){
@@ -96,7 +99,16 @@ public class ArticleController {
 
         return "/list";
     }
+    */
+    @GetMapping("/list")
+    public String list(Model model, String cate, PageRequestDTO pageRequestDTO){
 
+        PageResponseDTO pageResponseDTO = articleService.selectArticles(pageRequestDTO);
+        log.info("pageResponseDTO : " + pageResponseDTO);
+        model.addAttribute(pageResponseDTO);
+
+        return "/list";
+    }
 
     @GetMapping("/modify/{no}")
     public String modifyForm(@PathVariable("no") int no, Model model){
