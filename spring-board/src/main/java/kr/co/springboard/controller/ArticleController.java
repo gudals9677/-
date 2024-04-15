@@ -105,7 +105,7 @@ public class ArticleController {
 
         PageResponseDTO pageResponseDTO = articleService.selectArticles(pageRequestDTO);
         log.info("pageResponseDTO : " + pageResponseDTO);
-        model.addAttribute(pageResponseDTO);
+        model.addAttribute("pageResponseDTO",pageResponseDTO);
 
         return "/list";
     }

@@ -18,9 +18,9 @@ public interface ArticleRepository extends JpaRepository<Article, Integer>{
     //페이징 메서드 추가
     Page<Article> findByTitleContaining(String searchKeyword, Pageable pageable);
 
-    public Page<Article> findByParent(int parent, Pageable pageable);
+    public Page<Article> findByParent(Integer parent, Pageable pageable);
 
-    public List<Article> findByParent(int parent);
+    public List<Article> findByParent(Integer parent);
 
     @Query("select a, u.nick from Article a join User u on a.writer = u.uid where a.parent=:parent")
     Page<Article> findByParentWithNick(int parent, Pageable pageable);

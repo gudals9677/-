@@ -81,7 +81,24 @@
                 // POST용 fetchData 호출(util.js 확인, 기존 fetchData 이름을 fetchGet으로 변경)
                 const data = await fetchPost('/comment', jsonData);
 
-                console.log(data);
+                if (data) {
+                    // 등록된 댓글이 있을 경우 새로운 댓글을 추가하여 화면에 바로 표시
+                    const commentArticle = `<article class="comment">
+                                                <span>
+                                                    <span>${data.writer}</span>
+                                                    <span>${data.rdate.substring(0, 10)}</span>
+                                                </span>
+                                                <textarea name="comment" readonly>${data.content}</textarea>
+                                                <div>
+                                                    <a href="#">삭제</a>
+                                                    <a href="#">수정</a>
+                                                </div>
+                                            </article>`;
+
+                    const commentList = document.querySelector('.commentList');
+                    // 새로운 댓글을 마지막에 추가
+                    commentList.insertAdjacentHTML('beforeend', commentArticle);
+                }
             });
         });
         //////////////////////////////////////////////////////////////////////////
@@ -120,7 +137,7 @@
                 //태그 문자열 삽입
                 commentList.insertAdjacentHTML('beforeend', commentArticle);
             }
-        });
+        }, 2000);
 
     }
 </script>

@@ -59,14 +59,12 @@ public class ArticleService {
 
     public PageResponseDTO selectArticles(PageRequestDTO pageRequestDTO){
 
-        log.info("selectArticles...1");
         Pageable pageable = pageRequestDTO.getPageable("no");
 
-        log.info("selectArticles...2");
-        Page<Article> pageArticle = articleRepository.findByParent(0, pageable);
+        Page<Article> pageArticle = articleRepository.findByParent(null, pageable);
+        log.info("pageArticle = {}", pageArticle);
         //Page<Article> pageArticle = articleRepository.findByParentWithNick(0, pageable);
 
-        log.info("selectArticles...3 : " + pageArticle);
         List<ArticleDTO> dtoList = pageArticle.getContent().stream()
                 .map(article -> modelMapper.map(article, ArticleDTO.class))
                 .toList();
